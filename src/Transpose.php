@@ -3,23 +3,36 @@ namespace Transpose;
 
 class Transpose
 {
+    private function sameLengthInput(string $input) : string
+    {
+        $maxLineLength = 0;
+        $lines = explode(PHP_EOL, $input);
+        foreach($lines as $line) {
+            $lineLength = strlen($line);
+            if(strlen($line) > $maxLineLength) {
+                $maxLineLength = $lineLength;
+            }
+        }
+        $output = "";
+        foreach($lines as $line) {
+            $output .= str_pad($line,$maxLineLength," ", STR_PAD_RIGHT) . PHP_EOL;
+        }
+        return $output;
+    }
+
     public function convert(string $input)
     {
+        $input = $this->sameLengthInput($input);
         $splitNewLine = explode(PHP_EOL, $input);
         $output = [];
-        $maxLineLength = 0;
         foreach($splitNewLine as $parentIndex=>$line) {
             foreach(str_split($line) as $index=>$char) {
                 $output[$index][] = $char;
-                if($maxLineLength < count($output[$index])) {
-                    $maxLineLength = count($output[$index]);
-                }
             }
         }
         $outputString = "";
-        foreach($output as $line) {
-            $outputString .= str_pad(implode("", $line), $maxLineLength,
-                    " ", STR_PAD_LEFT) . PHP_EOL;
+        foreach($output as $index=>$line) {
+            $outputString .= implode("", $line) . PHP_EOL;
         }
         return $outputString;
     }
